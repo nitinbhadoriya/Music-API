@@ -1,4 +1,10 @@
 import requests
+import json
+
+def jprint(obj):
+    # create a formatted string of the Python JSON object
+    text = json.dumps(obj, sort_keys=True, indent=4)
+    print(text)
 
 
 def last_fm_requests(payload):
@@ -7,7 +13,7 @@ def last_fm_requests(payload):
     }
     url='https://ws.audioscrobbler.com/2.0/'
     r = requests.get(url, headers = headers, params = payload)
-    return r.status_code
+    return r
 
 API_KEY = 'c388e2286deda45d940563f3fae64a21'
 USER_AGENT = 'MusicAPI'
@@ -16,4 +22,4 @@ payload = {
     'method': 'chart.gettopartists',
     'format': 'json'
 }
-print(last_fm_requests(payload))
+jprint(last_fm_requests(payload).json())
