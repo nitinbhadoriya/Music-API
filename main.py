@@ -47,7 +47,7 @@ USER_AGENT = 'MusicAPI'
 responses=[]
 page=1
 total_pages=99999
-
+print("Processing may take upto 1 minute, kindly wait:")
 while page<=total_pages:
     payload = {
         'api_key': API_KEY,
@@ -56,7 +56,6 @@ while page<=total_pages:
         'page' :page,
         'format': 'json'
     }
-    print("Requesting page{}/{}".format(page,total_pages))
     clear_output(wait=True)
     response= last_fm_requests(payload)
 
@@ -83,4 +82,6 @@ artist_counts = [len(r.json()['artists']['artist']) for r in responses]
 #print(artist_counts[:50])
 artists = artists.drop_duplicates().reset_index(drop=True)
 artists['tags'] = artists['name'].progress_apply(lookup_tags)
-print(artists.head())
+artists[["playcount", "listeners"]] = artists[["playcount", "listeners"]].astype(int)
+artists = artists.sort_values("listeners", ascending=False)
+artists.to_csv('artists.csv', index=False)
